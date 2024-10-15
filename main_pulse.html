@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAX30100 Readings</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
+    <script>
+        // Initialize Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBq3D14Ga7l2FtRwAVZqhU5Obg2Boum_lk",
+  authDomain: "project-sleep-apnea.firebaseapp.com",
+  databaseURL: "https://project-sleep-apnea-default-rtdb.firebaseio.com",
+  projectId: "project-sleep-apnea",
+  storageBucket: "project-sleep-apnea.appspot.com",
+  messagingSenderId: "1043616455982",
+  appId: "1:1043616455982:web:04c503d8d5ef38126f2ebf"
+        };
+
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // Function to send data to Firebase
+        function sendToFirebase(pulse, spo2) {
+            const timestamp = new Date().toISOString();
+            firebase.database().ref('max30100_readings/' + timestamp).set({
+                pulse: pulse,
+                spo2: spo2,
+                timestamp: timestamp
+            });
+        }
+
+        // Fetch data from URL (sent by ESP8266)
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const pulse = urlParams.get('pulse');
+            const spo2 = urlParams.get('spo2');
+
+            if (pulse && spo2) {
+                document.getElementById('pulse').innerText = pulse;
+                document.getElementById('spo2').innerText = spo2;
+
+                // Send data to Firebase
+                sendToFirebase(pulse, spo2);
+            } else {
+                alert("No data received");
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>MAX30100 Sensor Readings</h1>
+    <p>Pulse Rate: <span id="pulse"></span> bpm</p>
+    <p>SpO2: <span id="spo2"></span>%</p>
+</body>
+</html>
