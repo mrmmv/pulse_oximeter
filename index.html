@@ -1,15 +1,17 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MAX30100 Readings</title>
+    <!-- Firebase JS SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database.js"></script>
     <script>
-        // Initialize Firebase
+        // Firebase configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBq3D14Ga7l2FtRwAVZqhU5Obg2Boum_lk",
+              apiKey: "AIzaSyBq3D14Ga7l2FtRwAVZqhU5Obg2Boum_lk",
   authDomain: "project-sleep-apnea.firebaseapp.com",
   databaseURL: "https://project-sleep-apnea-default-rtdb.firebaseio.com",
   projectId: "project-sleep-apnea",
@@ -18,6 +20,7 @@
   appId: "1:1043616455982:web:04c503d8d5ef38126f2ebf"
         };
 
+        // Initialize Firebase
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
@@ -28,6 +31,12 @@
                 pulse: pulse,
                 spo2: spo2,
                 timestamp: timestamp
+            }).then(() => {
+                console.log("Data sent to Firebase successfully.");
+                document.getElementById('status').innerText = "Data sent to Firebase!";
+            }).catch((error) => {
+                console.error("Error sending data to Firebase:", error);
+                document.getElementById('status').innerText = "Error sending data.";
             });
         }
 
@@ -44,7 +53,7 @@
                 // Send data to Firebase
                 sendToFirebase(pulse, spo2);
             } else {
-                alert("No data received");
+                document.getElementById('status').innerText = "No data received from the sensor.";
             }
         };
     </script>
@@ -53,5 +62,6 @@
     <h1>MAX30100 Sensor Readings</h1>
     <p>Pulse Rate: <span id="pulse"></span> bpm</p>
     <p>SpO2: <span id="spo2"></span>%</p>
+    <p id="status"></p>
 </body>
 </html>
